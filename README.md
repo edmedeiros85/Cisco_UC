@@ -8,3 +8,13 @@ Powershell Sidecar thing.
 
 
 
+Dungeons of the Ed
+--------------------
+  A UCCX TUI-based RPG in the works
+  Upload DOTE folder to doument repository in UCCX admin.
+  Requires Premium licensing as TTS server being used.
+  Character stats saved using 'keyword transform doc' step and uploading to DOTE/status.xml
+  Change Upload user / PW accordingly
+  Max steps system parameter may need to be increased to play for more than 10 minutes.
+  
+
