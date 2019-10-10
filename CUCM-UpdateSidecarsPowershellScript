@@ -117,7 +117,7 @@ $updatePhone= @"
 
 
 ### Hold my beer...
-Invoke-RestMethod -Method Post -Uri "https://172.30.4.21:8443/axl/" -Headers $headers -Body $updatePhone -Credential $creds
+Invoke-RestMethod -Method Post -Uri "https://<Y'er CUCM IP Yonder>:8443/axl/" -Headers $headers -Body $updatePhone -Credential $creds
 
 
 
