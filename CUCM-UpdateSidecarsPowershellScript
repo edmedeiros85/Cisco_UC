@@ -93,7 +93,7 @@ $phoneRequest= @"
 "@
 
 
-[xml]$API_RequestPhone = Invoke-RestMethod -Method Post -Uri "https://172.30.4.21:8443/axl/" -Headers $headers -Body $phoneRequest -Credential $creds
+[xml]$API_RequestPhone = Invoke-RestMethod -Method Post -Uri "https://<Y'er CUCM IP yonder>:8443/axl/" -Headers $headers -Body $phoneRequest -Credential $creds
 
 $XPATH_BLF = Select-Xml -Xml $API_RequestPhone -XPath "//phone/busyLampFields" -Namespace $namespace  | select -Expand 'Node' | select -Expand 'InnerXml'
 
