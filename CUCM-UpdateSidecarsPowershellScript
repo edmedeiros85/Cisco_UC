@@ -1,10 +1,11 @@
 #
 # Cisco Sidecar Dickerin'
 # Dickerin' done by Ed
+# Search for ##### and replace with your Call mangler info.
 #
 
 <###
-- grab CSV info And format XML section using 'foreach' in PS.
+- grab CSV info with 'foreach' loop and use that to format our XML section we will upload later.  CSV must have headers 'extension' and 'label'.
 - Store Formatted BLF XML section in PS Variable $XML_BLF
 - Use 'getPhone' API with CUCM
 - xpath BLF section of getPhone response and store in PS Var 
@@ -18,7 +19,9 @@
 ### - grab CSV info And format XML section using 'foreach' in PS.
 ### - Store Formatted BLF XML section in PS Variable $XML_BLF
 
-$csv = Import-Csv "C:\Users\emedeiros\Desktop\test.csv" -Encoding UTF8
+$CSV_Path = Read-Host "Enter the full path of the CSV File:  "
+
+$csv = Import-Csv $CSV_Path -Encoding UTF8
 
 [string]$CSV_BLF = foreach ($line in $csv){
 
@@ -30,12 +33,15 @@ $index = ($csv.IndexOf($line) + 1)
 "<busyLampField><blfDest>$extension</blfDest><blfDirn/><routePartition/><label>$label</label><associatedBlfSdFeatures/><index>$index</index></busyLampField>"
 }
 
-
-# because 'foreach' was adding whitespaces to end of each line. 
+ 
+# because 'foreach' was adding whitespaces to end of each line.    
 $CSV_BLF = $CSV_BLF.Replace("> <","><")
 
 
-### Who needs a CA?  Not this guy.
+### - Use 'getPhone' API with CUCM
+###- xpath BLF section of getPhone response and store in PS Var 
+
+# Who needs a CA?  Not this guy.
 add-type @"
     using System.Net;
     using System.Security.Cryptography.X509Certificates;
@@ -51,15 +57,10 @@ add-type @"
 [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy 
 
 
-
-### - Use 'getPhone' API with CUCM
-###- xpath BLF section of getPhone response and store in PS Var 
-
-
 # SOAP Headers Yonder:
 $headers = @{
     'SOAPAction' = 'CUCM:DBver=11.5';
-    'Authorization' = 'Basic';
+    'Authorization' = 'Basic #####'; #####USE POSTMAN TO GET HASH VALUE OF PASSWORD OR NO WORK.  REPLACE THE POUND TOWN IN AUTH HEADER WITH HASH. 
     'Content-Type' = 'text/xml;charset=UTF-8';}
 
 # Hashtable for XML namespaces over yonder:
@@ -71,13 +72,12 @@ ns = "http://www.cisco.com/AXL/API/11.5";}
 
 ##### User interaction goes here:
 ##### Really only need the MAC address of phone.  Everything else hadled by CSV. 
-##### Folks still need AXL privs though.
-##### Verificatoin will come later so we dont done jack it up. 
-
+##### Folks need AXL privs in call mangler. 
 
 $creds = Get-Credential
 $MAC = Read-Host "Enter the MAC address of the phone you wish to update:  "
 $phone = "SEP" + $MAC
+
 
 
 ### 'getPhone' API Yonder:
@@ -93,7 +93,7 @@ $phoneRequest= @"
 "@
 
 
-[xml]$API_RequestPhone = Invoke-RestMethod -Method Post -Uri "https://<Y'er CUCM IP yonder>:8443/axl/" -Headers $headers -Body $phoneRequest -Credential $creds
+[xml]$API_RequestPhone = Invoke-RestMethod -Method Post -Uri "https://#####:8443/axl/" -Headers $headers -Body $phoneRequest -Credential $creds
 
 $XPATH_BLF = Select-Xml -Xml $API_RequestPhone -XPath "//phone/busyLampFields" -Namespace $namespace  | select -Expand 'Node' | select -Expand 'InnerXml'
 
@@ -115,12 +115,8 @@ $updatePhone= @"
 </soapenv:Envelope>
 "@
 
-
-### Hold my beer...
-Invoke-RestMethod -Method Post -Uri "https://<Y'er CUCM IP Yonder>:8443/axl/" -Headers $headers -Body $updatePhone -Credential $creds
-
-
-
+# Hold My Beer...
+Invoke-RestMethod -Method Post -Uri "https://#####:8443/axl/" -Headers $headers -Body $updatePhone -Credential $creds
 
 
 
