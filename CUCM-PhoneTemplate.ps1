@@ -5,9 +5,16 @@
 #   I am not a programmamer....      #
 ######################################
 
+
 # This is messy as hell but i am not a programmammer so just took a lot of dickering with postman / PS to work.
 # Need ALL line fields filled out and will not work with EM profiles.
-
+# 
+# WHAT THIS DONE DOES:
+# Asks for 4 pieces of info:  Main device MAC, additonal description info, extension, and user ID
+# Pulls LDAP info from ccm end user page and populates caller ID on all associated lines for the extension you input.
+# Creates CSF device
+# Makes all device end-user / owner ID associations.
+# 
 
 #Who needs a CA?   Not this guy.
 add-type @"
